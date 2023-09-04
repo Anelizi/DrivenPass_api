@@ -8,7 +8,7 @@ export class CredentialCrypt {
   private cryptr: any;
 
   constructor() {
-    this.cryptr = new this.Cryptr(process.env.CRYPTR_SECRET);
+    this.cryptr = new this.Cryptr(process.env.CRYPTR);
   }
 
   cryptCredential(

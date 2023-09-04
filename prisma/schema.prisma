@@ -54,18 +54,31 @@ model Note {
 }
 
 model Card {
-  id         Int      @id @default(autoincrement())
+  id         Int        @id @default(autoincrement())
   title      String
   number     String
   cvv        String
   expiration String
   owner      String
   password   String
-  user       User     @relation(fields: [userId], references: [id])
+  typeCard   TypeCard[]
+  user       User       @relation(fields: [userId], references: [id])
   userId     Int
-  createdAt  DateTime @default(now())
-  updateAt   DateTime @updatedAt
+  createdAt  DateTime   @default(now())
+  updateAt   DateTime   @updatedAt
+  typeCardId Int?
 
   @@unique([title, userId])
   @@map("cards")
+}
+
+model TypeCard {
+  id        Int      @id @default(autoincrement())
+  type      String
+  card      Card[]
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+
+  @@unique([type])
+  @@map("cards-type")
 }

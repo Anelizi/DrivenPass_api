@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateNoteDto } from './dto/create-note.dto';
 import { NoteRepository } from './note.repository';
 
@@ -20,11 +20,22 @@ export class NoteService {
     return this.repository.findAll(userId);
   }
 
-  async findOne(id: number) {
-    return `This action returns a #${id} note`;
+  async findOne(id: number, userId: number) {
+    const note = await this.repository.findOne(id);
+
+    if(note.userId !== userId) throw new ForbiddenException(
+      'Note not exists in collection!'
+    )
+
+    if(!note) throw new NotFoundException(
+      'Note not exists!'
+    )
+    return note 
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} note`;
+  async remove(id: number, userId: number) {
+    await this.repository.findOne(id);
+
+    return this.repository.remove(id, userId);
   }
 }

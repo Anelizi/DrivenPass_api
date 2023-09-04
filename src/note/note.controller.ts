@@ -31,12 +31,14 @@ export class NoteController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.noteService.findOne(+id);
+  findOne(@Param('id') id: string, @User() user: UserPrisma) {
+    const { id: userId } = user;
+    return this.noteService.findOne(+id, userId);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.noteService.remove(+id);
+  remove(@Param('id') id: string, @User() user: UserPrisma) {
+    const { id: userId } = user;
+    return this.noteService.remove(+id, userId);
   }
 }

@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
   private EXPIRATION_TIME = '7 days';
-  private USSURE = 'Driven';
+  private ISSURE = 'Driven';
   private AUDIENCE = 'users';
 
   constructor(
@@ -39,10 +39,18 @@ export class AuthService {
       {
         expiresIn: this.EXPIRATION_TIME, //Por qunto tempo o token é válido
         subject: String(id), //de quem é o token
-        issuer: this.USSURE, //quem tá emitindo o token sistema driven
+        issuer: this.ISSURE, //quem tá emitindo o token sistema driven
         audience: this.AUDIENCE, //para qual serviço esse token está sendo gerado 
       },
     );
     return { token };
+  }
+
+  checkToken(token: string) {
+    const data = this.jwtService.verify(token, {
+      audience: this.AUDIENCE,
+      issuer: this.ISSURE
+    })
+    return data;
   }
 }

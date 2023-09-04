@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCredentialDto } from './dto/create-credential.dto';
 import { CredentialRepository } from './credential.repository';
 import { CredentialCrypt } from 'src/crypt/credential.crypt';
@@ -31,11 +31,21 @@ export class CredentialService {
     return credential.map((c) => this.credential.descryptCredential(c));
   }
 
-  async findOne(id: number) {
-    return `This action returns a #${id} credential`;
+  async findOne(id: number, userId: number) {
+    const credential = await this.repository.findOne(id);
+
+    if(!credential) throw new NotFoundException('Credential not exists')
+
+    if(credential.userId !== userId){
+      throw new ForbiddenException('Credential not exist in Collection')
+    }
+
+    return this.credential.descryptCredential(credential);
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} credential`;
+  async remove(id: number, userId: number) {
+    await this.findOne(id, userId);
+    
+    return this.repository.remove(id, userId);
   }
 }

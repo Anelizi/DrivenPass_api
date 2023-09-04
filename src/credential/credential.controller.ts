@@ -29,17 +29,19 @@ export class CredentialController {
 
   @Get()
   findAll(@User() user: UserPrisma) {
-    const { id } = user
+    const { id } = user;
     return this.credentialService.findAll(id);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.credentialService.findOne(+id);
+  findOne(@Param('id') id: string, @User() user: UserPrisma) {
+    const { id: userId } = user;
+    return this.credentialService.findOne(+id, userId);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.credentialService.remove(+id);
+  remove(@Param('id') id: string, @User() user: UserPrisma) {
+    const { id: userId } = user;
+    return this.credentialService.remove(+id, userId);
   }
 }

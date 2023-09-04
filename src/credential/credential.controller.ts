@@ -12,13 +12,17 @@ import { CreateCredentialDto } from './dto/create-credential.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { User } from 'src/decorators/user.decorator';
 import { User as UserPrisma } from '@prisma/client';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('credentials')
+@ApiBearerAuth()
 @UseGuards(AuthGuard)
 @Controller('credentials')
 export class CredentialController {
   constructor(private readonly credentialService: CredentialService) {}
 
   @Post()
+  @ApiBody({type: CreateCredentialDto})
   create(
     @Body() createCredentialDto: CreateCredentialDto,
     @User() user: UserPrisma,
